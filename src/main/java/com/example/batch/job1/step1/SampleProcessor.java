@@ -1,4 +1,4 @@
-package com.example.batch.job1.chunk1.step1;
+package com.example.batch.job1.step1;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -12,6 +12,7 @@ public class SampleProcessor implements ItemProcessor<Sample, Sample> {
 
 	@Override
 	public Sample process(Sample sample) throws Exception {
+    	System.out.println("----------SampleProcessor process----------");
 		return sample;
 	}
 

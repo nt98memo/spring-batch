@@ -1,4 +1,4 @@
-package com.example.batch.job1.chunk1.step1;
+package com.example.batch.job1.step1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,8 +18,10 @@ import org.springframework.stereotype.Component;
 
 import com.example.common.entity.demo.Sample;
 import com.example.common.entity.demo.SampleParent;
+import com.example.common.enumeration.Flg;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @Component
 @StepScope
@@ -29,19 +31,33 @@ public class SampleReader implements ItemReader<Sample>{
 	
     @PostConstruct
     private void postConstruct() {
+    	System.out.println("----------SampleReader postConstruct----------");
         try {
-        	reader = new BufferedReader(new InputStreamReader(new ClassPathResource("sample.tsv").getInputStream()));
+        	this.reader = new BufferedReader(new InputStreamReader(new ClassPathResource("com/example/batch/sample.tsv").getInputStream()));
         } catch (Exception e) {
         	throw new RuntimeException(e);
         }
     }
-    
+
+	@PreDestroy
+	public void preDestroy() {
+    	System.out.println("----------SampleReader preDestroy----------");
+        try {
+        	if (this.reader != null) {
+        		this.reader.close();
+        	}
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+	}
+	
 	@Override
 	public Sample read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    	System.out.println("----------SampleReader read----------");
 		
-        String line = reader.readLine();
+        String line = this.reader.readLine();
         if (line == null) {
-        	reader.close();
+        	this.reader.close();
         	return null;
         }
         
@@ -53,6 +69,8 @@ public class SampleReader implements ItemReader<Sample>{
         sample.setTextCol(lineSplit[3]);
         sample.setPasswordCol(lineSplit[4]);
         sample.setTextareaCol(lineSplit[5]);
+        sample.setRadioCol(Flg.OFF);
+        sample.setSelectCol(Flg.OFF);
         sample.setDateCol(new Date((new SimpleDateFormat("yyyy-MM-dd")).parse(lineSplit[6]).getTime()));
         sample.setTimeCol(Time.valueOf(lineSplit[7]));
         sample.setDatetimeCol(new Timestamp((new SimpleDateFormat("yyyy-MM-dd'T'HH:mm")).parse(lineSplit[8]).getTime()));

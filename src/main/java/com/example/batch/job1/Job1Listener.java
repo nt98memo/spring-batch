@@ -10,12 +10,12 @@ public class Job1Listener implements JobExecutionListener {
 
     @Override
 	public void beforeJob(JobExecution jobExecution) {
-    	System.out.println("Job1LIstener beforeJob");
+    	System.out.println("----------Job1Listener beforeJob----------");
 	}
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-    	System.out.println("Job1LIstener afterJob");
+    	System.out.println("----------Job1Listener afterJob----------");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
         }
     }
